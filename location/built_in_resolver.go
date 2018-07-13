@@ -19,7 +19,6 @@ package location
 
 import (
 	"errors"
-	"fmt"
 	"github.com/mysterium/node/location/gendb"
 	"github.com/oschwald/geoip2-golang"
 	"net"
@@ -36,10 +35,13 @@ func NewBuiltInResolver() Resolver {
 
 	dbBytes, err := gendb.LoadData()
 	if err != nil {
-		fmt.Println(err.Error())
+		return NewFailingResolver(err)
 	}
 
-	db, _ := geoip2.FromBytes(dbBytes)
+	db, err := geoip2.FromBytes(dbBytes)
+	if err != nil {
+		return NewFailingResolver(err)
+	}
 	return &builtInResolver{db: db}
 }
 
