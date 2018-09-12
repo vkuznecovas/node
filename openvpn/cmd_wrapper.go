@@ -60,10 +60,14 @@ func (cw *CmdWrapper) Start(arguments []string) (err error) {
 	if err != nil {
 		return err
 	}
+	defer stdout.Close()
+
 	stderr, err := cmd.StderrPipe()
 	if err != nil {
 		return err
 	}
+	defer stderr.Close()
+
 	go cw.outputToLog(stdout, "Stdout: ")
 	go cw.outputToLog(stderr, "Stderr: ")
 
