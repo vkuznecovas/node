@@ -55,6 +55,7 @@ func (cw *CmdWrapper) Start(arguments []string) (err error) {
 	cmd := exec.Command(cw.executablePath, arguments...)
 
 	// Attach logger for stdout and stderr
+	// Do we need to close then?
 	stdout, err := cmd.StdoutPipe()
 	if err != nil {
 		return err
