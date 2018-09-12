@@ -60,13 +60,11 @@ func (cw *CmdWrapper) Start(arguments []string) (err error) {
 	if err != nil {
 		return err
 	}
-	defer stdout.Close()
 
 	stderr, err := cmd.StderrPipe()
 	if err != nil {
 		return err
 	}
-	defer stderr.Close()
 
 	go cw.outputToLog(stdout, "Stdout: ")
 	go cw.outputToLog(stderr, "Stderr: ")
@@ -121,6 +119,7 @@ func (cw *CmdWrapper) waitForExit(cmd *exec.Cmd) {
 
 func (cw *CmdWrapper) waitForShutdown(cmd *exec.Cmd) {
 	<-cw.cmdShutdownStarted
+	log.Trace(cw.logPrefix, "Shutting down")
 	//First - shutdown gracefully by sending SIGINT (the only two signals guaranteed to be present in all OS'es SIGINT and SIGKILL)
 	//TODO - add timer and send SIGKILL after timeout?
 	if err := cmd.Process.Signal(exitSignal); err != nil {
